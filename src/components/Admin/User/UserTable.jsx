@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Table, Row, Col } from "antd";
+import { Table, Row, Col, Button } from "antd";
 import InputSearch from "./InputSearch";
 import { callFetchListUser } from "../../../services/api";
+import UserInfo from "./UserInfo";
+import {
+  CloudUploadOutlined,
+  ExportOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 
 const UserTable = () => {
   const [listUser, setListUser] = useState([]);
@@ -11,6 +17,9 @@ const UserTable = () => {
   const [filterQuery, setFilterQuery] = useState();
   const [sortQuery, setSortQuery] = useState();
   const [loading, setLoading] = useState(false);
+
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     fetchUser();
@@ -63,6 +72,19 @@ const UserTable = () => {
     {
       title: "Id",
       dataIndex: "_id",
+      render: (_, record) => {
+        return (
+          <a
+            href="#"
+            onClick={() => {
+              setOpenDrawer(true);
+              setSelectedUser(record);
+            }}
+          >
+            {record._id}
+          </a>
+        );
+      },
     },
     {
       title: "Tên hiển thị",
@@ -100,6 +122,35 @@ const UserTable = () => {
             setSortQuery={setSortQuery}
           />
         </Col>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+            padding: "0 20px",
+          }}
+        >
+          <span>Table List Users</span>
+          <span style={{ display: "flex", gap: 15 }}>
+            <Button>
+              <ExportOutlined />
+              Export
+            </Button>
+            <Button>
+              <CloudUploadOutlined />
+              Import
+            </Button>
+            <Button>Thêm mới</Button>
+            <Button>
+              <ReloadOutlined
+                onClick={() => {
+                  setSortQuery("");
+                  setFilterQuery("");
+                }}
+              />
+            </Button>
+          </span>
+        </div>
         <Col span={24}>
           <Table
             className="def"
@@ -113,7 +164,20 @@ const UserTable = () => {
               pageSize: pageSize,
               showSizeChanger: true,
               total: total,
+              showTotal: (total, range) => {
+                return (
+                  <div>
+                    {" "}
+                    {range[0]}-{range[1]} trên {total} rows
+                  </div>
+                );
+              },
             }}
+          />
+          <UserInfo
+            setOpenDrawer={setOpenDrawer}
+            openDrawer={openDrawer}
+            selectedUser={selectedUser}
           />
         </Col>
       </Row>
