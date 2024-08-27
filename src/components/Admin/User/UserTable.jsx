@@ -8,6 +8,7 @@ import {
   ExportOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import CreateUser from "./CreateUser";
 
 const UserTable = () => {
   const [listUser, setListUser] = useState([]);
@@ -20,6 +21,8 @@ const UserTable = () => {
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -140,7 +143,7 @@ const UserTable = () => {
               <CloudUploadOutlined />
               Import
             </Button>
-            <Button>Thêm mới</Button>
+            <Button onClick={() => setIsOpenModal(true)}>Thêm mới</Button>
             <Button>
               <ReloadOutlined
                 onClick={() => {
@@ -167,7 +170,6 @@ const UserTable = () => {
               showTotal: (total, range) => {
                 return (
                   <div>
-                    {" "}
                     {range[0]}-{range[1]} trên {total} rows
                   </div>
                 );
@@ -178,6 +180,11 @@ const UserTable = () => {
             setOpenDrawer={setOpenDrawer}
             openDrawer={openDrawer}
             selectedUser={selectedUser}
+          />
+          <CreateUser
+            setIsOpenModal={setIsOpenModal}
+            isOpenModal={isOpenModal}
+            fetchUser={fetchUser}
           />
         </Col>
       </Row>
