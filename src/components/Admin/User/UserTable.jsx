@@ -9,6 +9,7 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import CreateUser from "./CreateUser";
+import ImportUser from "./ImportUser";
 
 const UserTable = () => {
   const [listUser, setListUser] = useState([]);
@@ -23,6 +24,8 @@ const UserTable = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const [openImport, setOpenImport] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -139,7 +142,11 @@ const UserTable = () => {
               <ExportOutlined />
               Export
             </Button>
-            <Button>
+            <Button
+              onClick={() => {
+                setOpenImport(true);
+              }}
+            >
               <CloudUploadOutlined />
               Import
             </Button>
@@ -186,6 +193,7 @@ const UserTable = () => {
             isOpenModal={isOpenModal}
             fetchUser={fetchUser}
           />
+          <ImportUser openImport={openImport} setOpenImport={setOpenImport} />
         </Col>
       </Row>
     </>
