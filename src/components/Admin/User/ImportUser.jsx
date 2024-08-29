@@ -1,8 +1,8 @@
 import { InboxOutlined } from "@ant-design/icons";
 import { Modal, message, Upload, Table, notification } from "antd";
 import React, { useState } from "react";
-import { json } from "react-router-dom";
 import * as XLSX from "xlsx";
+import SampleExcel from "./data/template.xlsx?url";
 import { importUserApi } from "../../../services/api";
 
 const ImportUser = ({ openImport, setOpenImport, fetchUser }) => {
@@ -106,8 +106,9 @@ const ImportUser = ({ openImport, setOpenImport, fetchUser }) => {
             Click or drag file to this area to upload
           </p>
           <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibited from
-            uploading company data or other banned files.
+            <a href={SampleExcel} onClick={(e) => e.stopPropagation()} download>
+              Download Sample File
+            </a>
           </p>
         </Dragger>
         <Table
