@@ -1,14 +1,39 @@
 import { InboxOutlined } from "@ant-design/icons";
-import { Modal, message, Upload, Table } from "antd";
+import { Modal, message, Upload, Table, notification } from "antd";
 import React, { useState } from "react";
 import { json } from "react-router-dom";
 import * as XLSX from "xlsx";
+import { importUserApi } from "../../../services/api";
 
-const ImportUser = ({ openImport, setOpenImport }) => {
+const ImportUser = ({ openImport, setOpenImport, fetchUser }) => {
   const [dataExcel, setDataExcel] = useState([]);
-  const handleOk = () => {
-    setIsModalOpen(false);
+
+  console.log("dataexcel", dataExcel);
+
+  const handleSubmit = async () => {
+    const data = dataExcel.map((item) => {
+      item.password = "123456";
+      return item;
+    });
+    console.log("data", data);
+
+    const res = await importUserApi(data);
+    if (res.data) {
+      notification.success({
+        message: `Thành công: ${res.data.countSuccess}, Error: ${res.data.countError}`,
+        description: "Import thành công",
+      });
+      await fetchUser();
+      setOpenImport(false);
+      setDataExcel([]);
+    } else {
+      notification.error({
+        message: "Có lỗi",
+        description: res.data.message,
+      });
+    }
   };
+
   const dummyRequest = ({ file, onSuccess }) => {
     setTimeout(() => {
       onSuccess("ok");
@@ -62,11 +87,18 @@ const ImportUser = ({ openImport, setOpenImport }) => {
       <Modal
         title="Basic Modal"
         open={openImport}
-        onOk={handleOk}
-        onCancel={() => setOpenImport(false)}
+        onOk={handleSubmit}
+        maskClosable={false}
+        onCancel={() => {
+          setOpenImport(false);
+          setDataExcel([]);
+        }}
+        okButtonProps={{
+          disabled: dataExcel.length < 1,
+        }}
         okText="Import Data"
       >
-        <Dragger {...props}>
+        <Dragger {...props} showUploadList={dataExcel.length > 0}>
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>
@@ -80,6 +112,7 @@ const ImportUser = ({ openImport, setOpenImport }) => {
         </Dragger>
         <Table
           title={() => <span>Dữ liệu upload:</span>}
+          rowKey="id"
           dataSource={dataExcel}
           columns={[
             { dataIndex: "fullName", title: "Tên hiển thị" },

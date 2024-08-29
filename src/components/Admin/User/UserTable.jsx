@@ -193,7 +193,11 @@ const UserTable = () => {
             isOpenModal={isOpenModal}
             fetchUser={fetchUser}
           />
-          <ImportUser openImport={openImport} setOpenImport={setOpenImport} />
+          <ImportUser
+            fetchUser={fetchUser}
+            openImport={openImport}
+            setOpenImport={setOpenImport}
+          />
         </Col>
       </Row>
     </>
