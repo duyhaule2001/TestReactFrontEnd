@@ -8,6 +8,7 @@ import {
   ExportOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import * as XLSX from "xlsx";
 import CreateUser from "./CreateUser";
 import ImportUser from "./ImportUser";
 
@@ -74,6 +75,15 @@ const UserTable = () => {
     setFilterQuery(query);
   };
 
+  const handleDownloadExcel = (listUser) => {
+    const worksheet = XLSX.utils.json_to_sheet(listUser);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+    //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workbook, "DataSheet.csv");
+  };
+
   const columns = [
     {
       title: "Id",
@@ -138,7 +148,7 @@ const UserTable = () => {
         >
           <span>Table List Users</span>
           <span style={{ display: "flex", gap: 15 }}>
-            <Button>
+            <Button onClick={() => handleDownloadExcel(listUser)}>
               <ExportOutlined />
               Export
             </Button>
