@@ -5,12 +5,15 @@ import { callFetchListUser } from "../../../services/api";
 import UserInfo from "./UserInfo";
 import {
   CloudUploadOutlined,
+  DeleteOutlined,
+  EditOutlined,
   ExportOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
 import * as XLSX from "xlsx";
 import CreateUser from "./CreateUser";
 import ImportUser from "./ImportUser";
+import UpdateUser from "./UpdateUser";
 
 const UserTable = () => {
   const [listUser, setListUser] = useState([]);
@@ -27,6 +30,9 @@ const UserTable = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const [openImport, setOpenImport] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+
+  const [userUpdate, setUserUpdate] = useState(null);
 
   useEffect(() => {
     fetchUser();
@@ -75,13 +81,13 @@ const UserTable = () => {
     setFilterQuery(query);
   };
 
-  const handleDownloadExcel = (listUser) => {
-    const worksheet = XLSX.utils.json_to_sheet(listUser);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
-    //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
-    XLSX.writeFile(workbook, "DataSheet.csv");
+  const handleDownloadExcel = () => {
+    if (listUser.length > 0) {
+      const worksheet = XLSX.utils.json_to_sheet(listUser);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      XLSX.writeFile(workbook, "DataSheet.csv");
+    }
   };
 
   const columns = [
@@ -122,7 +128,14 @@ const UserTable = () => {
       render: (text, record, index) => {
         return (
           <>
-            <button>Delete</button>
+            <EditOutlined
+              onClick={() => {
+                setOpenUpdate(true);
+                setUserUpdate(record);
+              }}
+              style={{ color: "blue" }}
+            />
+            <DeleteOutlined style={{ marginLeft: "10px", color: "red" }} />
           </>
         );
       },
@@ -148,7 +161,7 @@ const UserTable = () => {
         >
           <span>Table List Users</span>
           <span style={{ display: "flex", gap: 15 }}>
-            <Button onClick={() => handleDownloadExcel(listUser)}>
+            <Button onClick={() => handleDownloadExcel()}>
               <ExportOutlined />
               Export
             </Button>
@@ -207,6 +220,12 @@ const UserTable = () => {
             fetchUser={fetchUser}
             openImport={openImport}
             setOpenImport={setOpenImport}
+          />
+          <UpdateUser
+            setOpenUpdate={setOpenUpdate}
+            openUpdate={openUpdate}
+            userUpdate={userUpdate}
+            fetchUser={fetchUser}
           />
         </Col>
       </Row>

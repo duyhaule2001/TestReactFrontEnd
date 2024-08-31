@@ -32,3 +32,7 @@ export const createUserApi = (fullName, password, email, phone) => {
 export const importUserApi = (data) => {
   return axios.post("/api/v1/user/bulk-create", data);
 };
+
+export const updateUser = (data) => {
+  return axios.put("/api/v1/user", data);
+};

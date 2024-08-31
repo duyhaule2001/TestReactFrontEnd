@@ -8,8 +8,6 @@ import { importUserApi } from "../../../services/api";
 const ImportUser = ({ openImport, setOpenImport, fetchUser }) => {
   const [dataExcel, setDataExcel] = useState([]);
 
-  console.log("dataexcel", dataExcel);
-
   const handleSubmit = async () => {
     const data = dataExcel.map((item) => {
       item.password = "123456";
