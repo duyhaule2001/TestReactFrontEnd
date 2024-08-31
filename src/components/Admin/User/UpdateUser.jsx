@@ -1,11 +1,12 @@
-import { Form, Input, Modal, notification } from "antd";
-import { useForm } from "antd/es/form/Form";
-import React, { useEffect } from "react";
+import { Button, Form, Input, Modal, notification } from "antd";
+import React, { useEffect, useState } from "react";
 import { updateUser } from "../../../services/api";
 
 const UpdateUser = ({ openUpdate, setOpenUpdate, userUpdate, fetchUser }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const onFinish = async (values) => {
+    setLoading(true);
     const data = {
       _id: values._id,
       fullName: values.fullName,
@@ -25,10 +26,13 @@ const UpdateUser = ({ openUpdate, setOpenUpdate, userUpdate, fetchUser }) => {
         description: res.message,
       });
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    form.setFieldsValue(userUpdate);
+    if (userUpdate) {
+      form.setFieldsValue(userUpdate);
+    }
   }, [userUpdate]);
 
   return (
@@ -38,6 +42,19 @@ const UpdateUser = ({ openUpdate, setOpenUpdate, userUpdate, fetchUser }) => {
         open={openUpdate}
         onOk={() => form.submit()}
         onCancel={() => setOpenUpdate(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setOpenUpdate(false)}>
+            Hủy bỏ
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={() => form.submit()}
+          >
+            Cập nhật
+          </Button>,
+        ]}
       >
         <Form form={form} name="basic" onFinish={onFinish} layout="vertical">
           <Form.Item label="ID" name="_id" hidden>

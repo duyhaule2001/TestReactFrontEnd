@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Table, Row, Col, Button } from "antd";
+import { Table, Row, Col, Button, Popconfirm, notification } from "antd";
 import InputSearch from "./InputSearch";
-import { callFetchListUser } from "../../../services/api";
+import { callFetchListUser, deleteUser } from "../../../services/api";
 import UserInfo from "./UserInfo";
 import {
   CloudUploadOutlined,
@@ -90,6 +90,22 @@ const UserTable = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    const res = await deleteUser(id);
+    if (res.data) {
+      notification.success({
+        message: "Thành công",
+        description: "Xoá người dùng thành công",
+      });
+      fetchUser();
+    } else {
+      notification.error({
+        message: "Lỗi",
+        description: res.message,
+      });
+    }
+  };
+
   const columns = [
     {
       title: "Id",
@@ -135,7 +151,16 @@ const UserTable = () => {
               }}
               style={{ color: "blue" }}
             />
-            <DeleteOutlined style={{ marginLeft: "10px", color: "red" }} />
+            <Popconfirm
+              title="Xoá người dùng"
+              description="Bạn có chắc chắn muốn xoá không?"
+              okText="Xoá"
+              cancelText="Không"
+              placement="leftTop"
+              onConfirm={() => handleDelete(record._id)}
+            >
+              <DeleteOutlined style={{ marginLeft: "10px", color: "red" }} />
+            </Popconfirm>
           </>
         );
       },

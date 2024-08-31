@@ -36,3 +36,7 @@ export const importUserApi = (data) => {
 export const updateUser = (data) => {
   return axios.put("/api/v1/user", data);
 };
+
+export const deleteUser = (id) => {
+  return axios.delete(`/api/v1/user/${id}`);
+};
