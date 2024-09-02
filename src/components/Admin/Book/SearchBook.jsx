@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Form, Input, Row, theme } from "antd";
 
-const InputSearch = (props) => {
+const SearchBook = ({ handleSearch }) => {
   const { token } = theme.useToken();
   const [form] = Form.useForm();
 
@@ -15,20 +15,18 @@ const InputSearch = (props) => {
   const onFinish = (values) => {
     let query = "";
 
-    if (values.fullName) {
-      query += `&fullName=/${values.fullName}/i`;
+    if (values.mainText) {
+      query += `&mainText=/${values.mainText}/i`;
     }
-
-    if (values.email) {
-      query += `&email=/${values.email}/i`;
+    if (values.author) {
+      query += `&author=/${values.author}/i`;
     }
-
-    if (values.phone) {
-      query += `&phone=/${values.phone}/i`;
+    if (values.category) {
+      query += `&category=/${values.category}/i`;
     }
 
     if (query) {
-      props.handleSearch(query);
+      handleSearch(query);
     }
   };
 
@@ -43,19 +41,19 @@ const InputSearch = (props) => {
         <Col span={8}>
           <Form.Item
             labelCol={{ span: 24 }} //whole column
-            name={`fullName`}
-            label={`Name`}
+            name={`mainText`}
+            label={`Tên Sách`}
           >
-            <Input placeholder="placeholder" />
+            <Input />
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item
             labelCol={{ span: 24 }} //whole column
-            name={`email`}
-            label={`Email`}
+            name={`author`}
+            label={`Tác giả`}
           >
-            <Input placeholder="placeholder" />
+            <Input />
           </Form.Item>
         </Col>
 
@@ -63,9 +61,9 @@ const InputSearch = (props) => {
           <Form.Item
             labelCol={{ span: 24 }} //whole column
             name={`phone`}
-            label={`Số điện thoại`}
+            label={`category`}
           >
-            <Input placeholder="placeholder" />
+            <Input />
           </Form.Item>
         </Col>
       </Row>
@@ -78,23 +76,14 @@ const InputSearch = (props) => {
             style={{ margin: "0 8px" }}
             onClick={() => {
               form.resetFields();
-              props.setSortQuery("");
             }}
           >
             Clear
           </Button>
-          {/* <a
-                        style={{ fontSize: 12 }}
-                        onClick={() => {
-                            setExpand(!expand);
-                        }}
-                    >
-                        {expand ? <UpOutlined /> : <DownOutlined />} Collapse
-                    </a> */}
         </Col>
       </Row>
     </Form>
   );
 };
 
-export default InputSearch;
+export default SearchBook;

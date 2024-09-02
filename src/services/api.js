@@ -1,3 +1,4 @@
+import { current } from "@reduxjs/toolkit";
 import axios from "../utils/axios-customize";
 
 export const callRegister = (fullName, email, password, phone) => {
@@ -39,4 +40,8 @@ export const updateUser = (data) => {
 
 export const deleteUser = (id) => {
   return axios.delete(`/api/v1/user/${id}`);
+};
+
+export const getListBook = (query) => {
+  return axios.get(`/api/v1/book?${query}`);
 };
