@@ -10,6 +10,8 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import BookViewDetail from "./BookViewDetail";
+import moment from "moment";
+import CreateBook from "./CreateBook";
 
 const BooksTable = () => {
   const [listBook, setListBook] = useState([]);
@@ -23,6 +25,8 @@ const BooksTable = () => {
   const [openModalView, setOpenModalView] = useState(false);
 
   const [selectedView, setSelectedView] = useState(null);
+
+  const [openCreateBook, setOpenCreateBook] = useState(false);
 
   useEffect(() => {
     fetchBook();
@@ -113,6 +117,9 @@ const BooksTable = () => {
       title: "Ngày cập nhật",
       dataIndex: "updatedAt",
       sorter: true,
+      render: (text) => {
+        return moment(text).format("DD-MM-YYYY HH:mm:ss");
+      },
     },
     {
       title: "Action",
@@ -146,7 +153,11 @@ const BooksTable = () => {
             <ExportOutlined />
             Export
           </Button>
-          <Button type="primary" style={{ marginRight: "5px" }}>
+          <Button
+            onClick={() => setOpenCreateBook(true)}
+            type="primary"
+            style={{ marginRight: "5px" }}
+          >
             <PlusOutlined /> Thêm mới
           </Button>
           <Button onClick={() => setFilterQuery("")} type="primary">
@@ -170,6 +181,10 @@ const BooksTable = () => {
         setOpenModalView={setOpenModalView}
         openModalView={openModalView}
         selectedView={selectedView}
+      />
+      <CreateBook
+        setOpenCreateBook={setOpenCreateBook}
+        openCreateBook={openCreateBook}
       />
     </>
   );

@@ -45,3 +45,7 @@ export const deleteUser = (id) => {
 export const getListBook = (query) => {
   return axios.get(`/api/v1/book?${query}`);
 };
+
+export const getBookCategory = () => {
+  return axios.get("/api/v1/database/category");
+};
