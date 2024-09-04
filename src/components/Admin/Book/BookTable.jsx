@@ -20,7 +20,7 @@ const BooksTable = () => {
   const [total, setTotal] = useState(0);
 
   const [filterQuery, setFilterQuery] = useState();
-  const [sortQuery, setSortQuery] = useState("sort=updatedAt");
+  const [sortQuery, setSortQuery] = useState("sort=-updatedAt");
 
   const [openModalView, setOpenModalView] = useState(false);
 
@@ -185,6 +185,7 @@ const BooksTable = () => {
       <CreateBook
         setOpenCreateBook={setOpenCreateBook}
         openCreateBook={openCreateBook}
+        fetchBook={fetchBook}
       />
     </>
   );

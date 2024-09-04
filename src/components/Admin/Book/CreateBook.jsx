@@ -10,10 +10,14 @@ import {
   Upload,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { callUploadBookImg, getBookCategory } from "../../../services/api";
+import {
+  callUploadBookImg,
+  createBook,
+  getBookCategory,
+} from "../../../services/api";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
-const CreateBook = ({ openCreateBook, setOpenCreateBook }) => {
+const CreateBook = ({ openCreateBook, setOpenCreateBook, fetchBook }) => {
   const [form] = Form.useForm();
 
   const [isSubmit, setIsSubmit] = useState(false);
@@ -41,11 +45,32 @@ const CreateBook = ({ openCreateBook, setOpenCreateBook }) => {
     fetchCategory();
   }, []);
 
-  const onFinish = (values) => {
-    console.log(">>> check values: ", values);
-    console.log(">>> check data thumbnail: ", dataThumbnail);
-    console.log(">>> check data slider: ", dataSlider);
-    return;
+  const onFinish = async (values) => {
+    // console.log(">>> check values: ", values);
+    // console.log(">>> check data thumbnail: ", dataThumbnail);
+    // console.log(">>> check data slider: ", dataSlider);
+    // return;
+    const slider = dataSlider.map((item) => item.name);
+    const thumbnail = dataThumbnail[0].name;
+    const data = {
+      thumbnail: thumbnail,
+      slider: slider,
+      mainText: values.mainText,
+      author: values.author,
+      price: values.price,
+      sold: values.sold,
+      quantity: values.quantity,
+      category: values.category,
+    };
+    const res = await createBook(data);
+    if (res.data) {
+      notification.success({
+        message: "Thành công",
+        description: "Tạo mới sách thành công",
+      });
+      setOpenCreateBook(false);
+      await fetchBook();
+    }
   };
 
   const getBase64 = (img, callback) => {

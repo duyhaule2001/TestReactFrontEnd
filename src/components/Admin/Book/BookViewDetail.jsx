@@ -82,6 +82,12 @@ const BookViewDetail = ({
             <Descriptions.Item label="Giá tiền">
               {selectedView?.price}
             </Descriptions.Item>
+            <Descriptions.Item label="Số lượng">
+              {selectedView?.quantity}
+            </Descriptions.Item>
+            <Descriptions.Item label="Đã bán">
+              {selectedView?.sold}
+            </Descriptions.Item>
             <Descriptions.Item span={2} label="Thể loại">
               {selectedView?.category}
             </Descriptions.Item>
