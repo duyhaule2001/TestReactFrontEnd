@@ -201,6 +201,7 @@ const BooksTable = () => {
         openUpdateBook={openUpdateBook}
         selectedUpdate={selectedUpdate}
         setSelectedUpdate={setSelectedUpdate}
+        fetchBook={fetchBook}
       />
     </>
   );

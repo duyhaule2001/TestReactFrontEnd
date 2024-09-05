@@ -4,12 +4,17 @@ import {
   Input,
   InputNumber,
   Modal,
+  notification,
   Row,
   Select,
   Upload,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { getBookCategory } from "../../../services/api";
+import {
+  callUploadBookImg,
+  getBookCategory,
+  updateBook,
+} from "../../../services/api";
 import { v4 as uuidv4 } from "uuid";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { message } from "antd";
@@ -19,6 +24,7 @@ const UpdateBook = ({
   openUpdateBook,
   selectedUpdate,
   setSelectedUpdate,
+  fetchBook,
 }) => {
   const [form] = Form.useForm();
   const [options, setOptions] = useState([]);
@@ -36,7 +42,35 @@ const UpdateBook = ({
   const [previewImage, setPreviewImage] = useState();
   const [imageUrl, setImageUrl] = useState();
 
-  const onFinish = (values) => {};
+  const onFinish = async (values) => {
+    const { _id, mainText, author, price, sold, quantity, category } = values;
+    const thumbnail = dataThumbnail[0].name;
+    const slider = dataSlider.map((item) => item.name);
+    const res = await updateBook(
+      _id,
+      thumbnail,
+      slider,
+      mainText,
+      author,
+      price,
+      sold,
+      quantity,
+      category
+    );
+    if (res.data) {
+      message.success("Cập nhật thành công");
+      setDataSlider([]);
+      setDataThumbnail([]);
+      setOpenUpdateBook(false);
+      setInitForm(null);
+      await fetchBook();
+    } else {
+      notification.error({
+        message: "Lỗi",
+        description: "Đã có lỗi xảy ra ",
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -208,6 +242,21 @@ const UpdateBook = ({
           form={form}
         >
           <Row gutter={15}>
+            <Col span={24}>
+              <Form.Item
+                label="id"
+                name="_id"
+                hidden
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your username!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
             <Col span={12}>
               <Form.Item
                 label="Tên sách"
@@ -324,7 +373,7 @@ const UpdateBook = ({
                     onChange={handleChange}
                     onRemove={(file) => handleRemoveFile(file, "thumbnail")}
                     onPreview={handlePreview}
-                    fileList={dataThumbnail}
+                    defaultFileList={initForm?.thumbnail?.fileList ?? []}
                     style={{
                       display: "flex",
                       flexDirection: "column",
@@ -360,7 +409,7 @@ const UpdateBook = ({
                     onChange={(info) => handleChange(info, "slider")}
                     onPreview={handlePreview}
                     onRemove={(file) => handleRemoveFile(file, "slider")}
-                    fileList={dataSlider}
+                    defaultFileList={initForm?.slider?.fileList ?? []}
                     style={{
                       display: "flex",
                       flexDirection: "column",
