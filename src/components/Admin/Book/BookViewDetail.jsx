@@ -48,7 +48,7 @@ const BookViewDetail = ({
 
   const handleCancel = () => {
     setPreviewOpen(false);
-    setOpenModalView(false);
+    // setOpenModalView(false);
     setPreviewImage("");
     setSelectedView(null);
   };

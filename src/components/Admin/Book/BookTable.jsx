@@ -12,6 +12,7 @@ import {
 import BookViewDetail from "./BookViewDetail";
 import moment from "moment";
 import CreateBook from "./CreateBook";
+import UpdateBook from "./UpdateBook";
 
 const BooksTable = () => {
   const [listBook, setListBook] = useState([]);
@@ -25,8 +26,10 @@ const BooksTable = () => {
   const [openModalView, setOpenModalView] = useState(false);
 
   const [selectedView, setSelectedView] = useState(null);
+  const [selectedUpdate, setSelectedUpdate] = useState();
 
   const [openCreateBook, setOpenCreateBook] = useState(false);
+  const [openUpdateBook, setOpenUpdateBook] = useState(false);
 
   useEffect(() => {
     fetchBook();
@@ -123,10 +126,16 @@ const BooksTable = () => {
     },
     {
       title: "Action",
-      render: () => {
+      render: (record) => {
         return (
           <div>
-            <EditOutlined style={{ color: "blue", marginRight: "10px" }} />
+            <EditOutlined
+              onClick={() => {
+                setOpenUpdateBook(true);
+                setSelectedUpdate(record);
+              }}
+              style={{ color: "blue", marginRight: "10px" }}
+            />
             <DeleteOutlined style={{ color: "red" }} />
           </div>
         );
@@ -186,6 +195,12 @@ const BooksTable = () => {
         setOpenCreateBook={setOpenCreateBook}
         openCreateBook={openCreateBook}
         fetchBook={fetchBook}
+      />
+      <UpdateBook
+        setOpenUpdateBook={setOpenUpdateBook}
+        openUpdateBook={openUpdateBook}
+        selectedUpdate={selectedUpdate}
+        setSelectedUpdate={setSelectedUpdate}
       />
     </>
   );
