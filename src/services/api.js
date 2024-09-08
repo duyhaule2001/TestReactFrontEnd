@@ -90,3 +90,7 @@ export const updateBook = (
     category,
   });
 };
+
+export const deleteBook = (id) => {
+  return axios.delete(`/api/v1/book/${id}`);
+};

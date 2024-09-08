@@ -83,14 +83,6 @@ const InputSearch = (props) => {
           >
             Clear
           </Button>
-          {/* <a
-                        style={{ fontSize: 12 }}
-                        onClick={() => {
-                            setExpand(!expand);
-                        }}
-                    >
-                        {expand ? <UpOutlined /> : <DownOutlined />} Collapse
-                    </a> */}
         </Col>
       </Row>
     </Form>

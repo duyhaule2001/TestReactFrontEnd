@@ -86,7 +86,6 @@ const UpdateBook = ({
   }, []);
 
   useEffect(() => {
-    console.log("check selectedUpdate", selectedUpdate);
     if (selectedUpdate?._id) {
       const arrThumbnail = [
         {

@@ -1,6 +1,6 @@
-import { Button, notification, Table } from "antd";
+import { Button, message, notification, Popconfirm, Table } from "antd";
 import React, { useEffect, useState } from "react";
-import { getListBook } from "../../../services/api";
+import { deleteBook, getListBook } from "../../../services/api";
 import SearchBook from "./SearchBook";
 import {
   DeleteOutlined,
@@ -13,6 +13,7 @@ import BookViewDetail from "./BookViewDetail";
 import moment from "moment";
 import CreateBook from "./CreateBook";
 import UpdateBook from "./UpdateBook";
+import * as XLSX from "xlsx";
 
 const BooksTable = () => {
   const [listBook, setListBook] = useState([]);
@@ -79,6 +80,28 @@ const BooksTable = () => {
     setFilterQuery(query);
   };
 
+  const handleDownloadExcel = () => {
+    if (listBook.length > 0) {
+      const worksheet = XLSX.utils.json_to_sheet(listBook);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      XLSX.writeFile(workbook, "DataSheet.csv");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const res = await deleteBook(id);
+    if (res) {
+      message.success("Xoá sách thành công");
+      fetchBook();
+    } else {
+      notification.error({
+        message: "Lỗi",
+        description: res.message,
+      });
+    }
+  };
+
   const columns = [
     {
       title: "id",
@@ -136,7 +159,16 @@ const BooksTable = () => {
               }}
               style={{ color: "blue", marginRight: "10px" }}
             />
-            <DeleteOutlined style={{ color: "red" }} />
+            <Popconfirm
+              title="Delete the task"
+              description="Are you sure to delete this task?"
+              onConfirm={() => handleDelete(record._id)}
+              // onCancel={cancel}
+              okText="Yes"
+              // cancelText="No"
+            >
+              <DeleteOutlined style={{ color: "red" }} />
+            </Popconfirm>
           </div>
         );
       },
@@ -158,7 +190,11 @@ const BooksTable = () => {
       >
         <span>Table List Book</span>
         <div>
-          <Button type="primary" style={{ marginRight: "5px" }}>
+          <Button
+            onClick={() => handleDownloadExcel()}
+            type="primary"
+            style={{ marginRight: "5px" }}
+          >
             <ExportOutlined />
             Export
           </Button>
