@@ -11,6 +11,7 @@ import {
   Tabs,
   Pagination,
   notification,
+  Spin,
 } from "antd";
 import "./home.scss";
 import { useEffect, useState } from "react";
@@ -27,11 +28,14 @@ const Home = () => {
   const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     fetchBook();
   }, [current, pageSize, filterQuery, sortQuery]);
 
   const fetchBook = async () => {
+    setIsLoading(true);
     let query = `current=${current}&pageSize=${pageSize}`;
 
     if (sortQuery) {
@@ -54,6 +58,7 @@ const Home = () => {
         description: res.message,
       });
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -85,43 +90,52 @@ const Home = () => {
       setPageSize(pagination.pageSize);
       setCurrent(1);
     }
-    // if (sorter && sorter.field) {
-    //   const q =
-    //     sorter.order === "ascend"
-    //       ? `sort=${sorter.field}`
-    //       : `sort=-${sorter.field}`;
-    //   setSortQuery(q);
-    // }
   };
 
   const handleChangeFilter = (changedValues, values) => {
     console.log(">>> check handleChangeFilter", changedValues, values);
+
+    if (changedValues.category) {
+      const cate = values.category;
+      if (cate && cate.length > 0) {
+        const f = cate.join(",");
+        setFilterQuery(`category=${f}`);
+      } else {
+        setFilterQuery("");
+      }
+    }
   };
 
-  const onFinish = (values) => {};
-
-  const onChange = (key) => {
-    console.log(key);
+  const onFinish = (values) => {
+    console.log("check value", values);
+    if (values?.range?.from >= 0 && values.range.to >= 0) {
+      let f = `price >=${values?.range?.from}&price<=${values?.range?.to}`;
+      if (values?.category?.length) {
+        const cate = values?.category?.join(",");
+        f += `&category=${cate}`;
+      }
+      setFilterQuery(f);
+    }
   };
 
   const items = [
     {
-      key: "1",
+      key: "sort=-sold",
       label: `Phổ biến`,
       children: <></>,
     },
     {
-      key: "2",
+      key: "sort=-createdAt",
       label: `Hàng Mới`,
       children: <></>,
     },
     {
-      key: "3",
+      key: "sort=price",
       label: `Giá Thấp Đến Cao`,
       children: <></>,
     },
     {
-      key: "4",
+      key: "sort=-price",
       label: `Giá Cao Đến Thấp`,
       children: <></>,
     },
@@ -252,40 +266,46 @@ const Home = () => {
         </Col>
         <Col md={20} xs={24}>
           <Row>
-            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              onChange={(value) => setSortQuery(value)}
+            />
           </Row>
-          <Row className="customize-row">
-            {listBook.map((item, index) => {
-              return (
-                <div className="column" key={index}>
-                  <div className="wrapper">
-                    <div className="thumbnail">
-                      <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${
-                          item.thumbnail
-                        }`}
-                      />
-                    </div>
-                    <div className="text">{item.mainText}</div>
-                    <div className="price">
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(item.price)}
-                    </div>
-                    <div className="rating">
-                      <Rate
-                        value={5}
-                        disabled
-                        style={{ color: "#ffce3d", fontSize: 10 }}
-                      />
-                      <span>Đã bán {item.sold}</span>
+          <Spin spinning={isLoading} tip="Loading...">
+            <Row className="customize-row">
+              {listBook.map((item, index) => {
+                return (
+                  <div className="column" key={index}>
+                    <div className="wrapper">
+                      <div className="thumbnail">
+                        <img
+                          src={`${
+                            import.meta.env.VITE_BACKEND_URL
+                          }/images/book/${item.thumbnail}`}
+                        />
+                      </div>
+                      <div className="text">{item.mainText}</div>
+                      <div className="price">
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(item.price)}
+                      </div>
+                      <div className="rating">
+                        <Rate
+                          value={5}
+                          disabled
+                          style={{ color: "#ffce3d", fontSize: 10 }}
+                        />
+                        <span>Đã bán {item.sold}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </Row>
+                );
+              })}
+            </Row>
+          </Spin>
           <Divider />
           <Row style={{ display: "flex", justifyContent: "center" }}>
             <Pagination
