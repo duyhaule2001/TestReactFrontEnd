@@ -18,6 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import LayoutAdmin from "./components/Admin/LayoutAdmin";
 import "./styles/reset.scss";
 import ManageUserPage from "./pages/admin/user";
+import "./styles/global.scss";
 
 const Layout = () => {
   return (
