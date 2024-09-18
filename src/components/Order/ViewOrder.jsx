@@ -1,4 +1,4 @@
-import { Col, Divider, InputNumber, Row } from "antd";
+import { Col, Divider, Empty, InputNumber, Row } from "antd";
 import "./order.scss";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import {
 } from "../../redux/order/orderSlice";
 import { useEffect, useState } from "react";
 
-const ViewOrder = (props) => {
+const ViewOrder = ({ setCurrentStep }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.order.carts);
@@ -42,47 +42,51 @@ const ViewOrder = (props) => {
       >
         <Row gutter={[20, 20]}>
           <Col md={18} xs={24}>
-            {cart.map((book, index) => {
-              const sumBookTotal = book?.detail?.price * book.quantity;
-              return (
-                <div className="order-book" key={index}>
-                  <div className="book-content">
-                    <img
-                      src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${
-                        book?.detail?.thumbnail
-                      }`}
-                    />
-                    <div className="title">{book?.detail?.mainText}</div>
-                    <div className="price">
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(book?.detail?.price)}
+            {cart.length > 0 ? (
+              cart.map((book, index) => {
+                const sumBookTotal = book?.detail?.price * book.quantity;
+                return (
+                  <div className="order-book" key={index}>
+                    <div className="book-content">
+                      <img
+                        src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${
+                          book?.detail?.thumbnail
+                        }`}
+                      />
+                      <div className="title">{book?.detail?.mainText}</div>
+                      <div className="price">
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(book?.detail?.price)}
+                      </div>
                     </div>
-                  </div>
-                  <div className="action">
-                    <div className="quantity">
-                      <InputNumber
-                        onChange={(value) => handleOnChangeInput(value, book)}
-                        value={book?.quantity}
+                    <div className="action">
+                      <div className="quantity">
+                        <InputNumber
+                          onChange={(value) => handleOnChangeInput(value, book)}
+                          value={book?.quantity}
+                        />
+                      </div>
+                      <div className="sum">
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(sumBookTotal)}
+                      </div>
+                      <DeleteOutlined
+                        onClick={() =>
+                          dispatch(doDeleteItemCartAction({ _id: book?._id }))
+                        }
+                        style={{ color: "red" }}
                       />
                     </div>
-                    <div className="sum">
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(sumBookTotal)}
-                    </div>
-                    <DeleteOutlined
-                      onClick={() =>
-                        dispatch(doDeleteItemCartAction({ _id: book?._id }))
-                      }
-                      style={{ color: "red" }}
-                    />
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <Empty description="Không có đơn hàng tồn tại" />
+            )}
           </Col>
           <Col md={6} xs={24}>
             <div className="order-sum">
@@ -106,7 +110,9 @@ const ViewOrder = (props) => {
                 </span>
               </div>
               <Divider style={{ margin: "10px 0" }} />
-              <button>Mua Hàng {cart?.length ?? 0}</button>
+              <button onClick={() => setCurrentStep(1)}>
+                Mua Hàng {cart?.length ?? 0}
+              </button>
             </div>
           </Col>
         </Row>

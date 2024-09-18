@@ -19,7 +19,7 @@ import LayoutAdmin from "./components/Admin/LayoutAdmin";
 import "./styles/reset.scss";
 import ManageUserPage from "./pages/admin/user";
 import "./styles/global.scss";
-import ViewOrder from "./components/Order/ViewOrder";
+import OrderPage from "./pages/order";
 
 const Layout = () => {
   return (
@@ -69,7 +69,7 @@ export default function App() {
         },
         {
           path: "order",
-          element: <ViewOrder />,
+          element: <OrderPage />,
         },
       ],
     },
