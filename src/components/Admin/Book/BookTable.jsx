@@ -151,7 +151,7 @@ const BooksTable = () => {
       title: "Action",
       render: (record) => {
         return (
-          <div>
+          <div className="flex items-center justify-center space-x-3">
             <EditOutlined
               onClick={() => {
                 setOpenUpdateBook(true);
@@ -163,9 +163,7 @@ const BooksTable = () => {
               title="Delete the task"
               description="Are you sure to delete this task?"
               onConfirm={() => handleDelete(record._id)}
-              // onCancel={cancel}
               okText="Yes"
-              // cancelText="No"
             >
               <DeleteOutlined style={{ color: "red" }} />
             </Popconfirm>

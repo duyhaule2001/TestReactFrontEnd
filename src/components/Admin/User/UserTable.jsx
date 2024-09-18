@@ -143,7 +143,7 @@ const UserTable = () => {
       title: "Action",
       render: (text, record, index) => {
         return (
-          <>
+          <div className="flex items-center justify-center space-x-3">
             <EditOutlined
               onClick={() => {
                 setOpenUpdate(true);
@@ -161,7 +161,7 @@ const UserTable = () => {
             >
               <DeleteOutlined style={{ marginLeft: "10px", color: "red" }} />
             </Popconfirm>
-          </>
+          </div>
         );
       },
     },
