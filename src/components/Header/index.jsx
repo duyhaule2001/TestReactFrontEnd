@@ -15,9 +15,10 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
-  const user = useSelector((state) => state.account.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.account.user);
+  const cart = useSelector((state) => state.order.carts);
 
   const handleLogout = async () => {
     const res = await callLogout();
@@ -81,7 +82,7 @@ const Header = () => {
           <nav className="page-header__bottom">
             <ul id="navigation" className="navigation">
               <li className="navigation__item">
-                <Badge count={5} size={"small"}>
+                <Badge count={cart?.length ?? 0} size={"small"} showZero>
                   <FiShoppingCart className="icon-cart" />
                 </Badge>
               </li>
