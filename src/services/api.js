@@ -98,3 +98,7 @@ export const deleteBook = (id) => {
 export const getBookDetail = (id) => {
   return axios.get(`/api/v1/book/${id}`);
 };
+
+export const createOrder = (data) => {
+  return axios.post("/api/v1/order", data);
+};
