@@ -36,6 +36,17 @@ const Header = () => {
     },
     {
       label: (
+        <label
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("orderHistory")}
+        >
+          Lịch sử mua hàng
+        </label>
+      ),
+      key: "account",
+    },
+    {
+      label: (
         <label style={{ cursor: "pointer" }} onClick={() => handleLogout()}>
           Đăng xuất
         </label>

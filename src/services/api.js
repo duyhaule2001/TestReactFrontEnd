@@ -102,3 +102,7 @@ export const getBookDetail = (id) => {
 export const createOrder = (data) => {
   return axios.post("/api/v1/order", data);
 };
+
+export const getHistoryOrder = () => {
+  return axios.get("/api/v1/history");
+};
