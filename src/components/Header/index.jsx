@@ -13,7 +13,7 @@ import { doLogoutAction } from "../../redux/account/accountSlice";
 import { Link } from "react-router-dom";
 import ManageAccount from "../Account/ManageAccount";
 
-const Header = () => {
+const Header = ({ searchTerm, setSearchTerm }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
   const navigate = useNavigate();
@@ -121,6 +121,8 @@ const Header = () => {
                 className="input-search"
                 type={"text"}
                 placeholder="Bạn tìm gì hôm nay"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>

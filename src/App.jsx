@@ -21,12 +21,14 @@ import ManageUserPage from "./pages/admin/user";
 import "./styles/global.scss";
 import OrderPage from "./pages/order";
 import OrderHistory from "./pages/history";
+import BooksTable from "./components/Admin/Book/BookTable";
 
 const Layout = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <div className="layout-app">
-      <Header />
-      <Outlet />
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Outlet context={[searchTerm, setSearchTerm]} />
       <Footer />
     </div>
   );
@@ -70,11 +72,19 @@ export default function App() {
         },
         {
           path: "order",
-          element: <OrderPage />,
+          element: (
+            <ProtectedRoute>
+              <OrderPage />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "orderHistory",
-          element: <OrderHistory />,
+          element: (
+            <ProtectedRoute>
+              <OrderHistory />
+            </ProtectedRoute>
+          ),
         },
       ],
     },
@@ -102,7 +112,7 @@ export default function App() {
         },
         {
           path: "book",
-          element: <BookPage />,
+          element: <BooksTable />,
         },
       ],
     },

@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppstoreOutlined,
   ExceptionOutlined,
-  HeartTwoTone,
-  TeamOutlined,
   UserOutlined,
   DollarCircleOutlined,
   MenuFoldOutlined,
@@ -11,14 +9,14 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Dropdown, Space, message, Avatar } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./layout.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { callLogout } from "../../services/api";
 import { doLogoutAction } from "../../redux/account/accountSlice";
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 const items = [
   {
@@ -28,18 +26,16 @@ const items = [
   },
   {
     label: <span>Manage Users</span>,
-    // key: 'user',
+    key: "user",
     icon: <UserOutlined />,
     children: [
       {
         label: <Link to="/admin/user">CRUD</Link>,
         key: "crud",
-        icon: <TeamOutlined />,
       },
       {
         label: "Files1",
         key: "file1",
-        icon: <TeamOutlined />,
       },
     ],
   },
@@ -61,7 +57,22 @@ const LayoutAdmin = () => {
   const user = useSelector((state) => state.account.user);
 
   const navigate = useNavigate();
+  const location = useLocation(); // Sử dụng useLocation để lấy đường dẫn hiện tại
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Lấy key của menu dựa trên URL hiện tại
+    const path = location.pathname;
+    if (path.includes("/admin/user")) {
+      setActiveMenu("user");
+    } else if (path.includes("/admin/book")) {
+      setActiveMenu("book");
+    } else if (path.includes("/admin/order")) {
+      setActiveMenu("order");
+    } else {
+      setActiveMenu("dashboard");
+    }
+  }, [location.pathname]); // Chạy lại mỗi khi đường dẫn thay đổi
 
   const handleLogout = async () => {
     const res = await callLogout();
@@ -97,6 +108,7 @@ const LayoutAdmin = () => {
   const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${
     user?.avatar
   }`;
+
   return (
     <Layout style={{ minHeight: "100vh" }} className="layout-admin">
       <Sider
@@ -107,10 +119,10 @@ const LayoutAdmin = () => {
       >
         <div style={{ height: 32, margin: 16, textAlign: "center" }}>Admin</div>
         <Menu
-          defaultSelectedKeys={[activeMenu]}
+          selectedKeys={[activeMenu]} // Cập nhật selectedKeys từ activeMenu
           mode="inline"
           items={items}
-          onClick={(e) => setActiveMenu(e.key)}
+          onClick={(e) => setActiveMenu(e.key)} // Cập nhật activeMenu khi nhấn vào item
         />
       </Sider>
       <Layout>
@@ -136,9 +148,6 @@ const LayoutAdmin = () => {
         <Content style={{ padding: "15px" }}>
           <Outlet />
         </Content>
-        {/* <Footer style={{ padding: 0 }}>
-                    React Test Fresher &copy; Hỏi Dân IT - Made with <HeartTwoTone />
-                </Footer> */}
       </Layout>
     </Layout>
   );

@@ -16,10 +16,11 @@ import {
 import "./home.scss";
 import { useEffect, useState } from "react";
 import { getBookCategory, getListBook } from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 const Home = () => {
   const [form] = Form.useForm();
 
+  const [searchTerm, setSearchTerm] = useOutletContext();
   const [listCategory, setListCategory] = useState([]);
 
   const [filterQuery, setFilterQuery] = useState();
@@ -35,7 +36,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchBook();
-  }, [current, pageSize, filterQuery, sortQuery]);
+  }, [current, pageSize, filterQuery, sortQuery, searchTerm]);
 
   const fetchBook = async () => {
     setIsLoading(true);
@@ -47,6 +48,10 @@ const Home = () => {
 
     if (filterQuery) {
       query += `&${filterQuery}`;
+    }
+
+    if (searchTerm) {
+      query += `&mainText=/${searchTerm}/i`;
     }
 
     const res = await getListBook(query);
@@ -202,7 +207,9 @@ const Home = () => {
             <ReloadOutlined
               style={{ marginLeft: "10px" }}
               title="Reset"
-              onClick={() => form.resetFields()}
+              onClick={() => {
+                form.resetFields(), setFilterQuery(""), setSearchTerm("");
+              }}
             />
           </div>
           <Form
