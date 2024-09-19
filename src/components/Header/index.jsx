@@ -11,6 +11,7 @@ import { callLogout } from "../../services/api";
 import "./header.scss";
 import { doLogoutAction } from "../../redux/account/accountSlice";
 import { Link } from "react-router-dom";
+import ManageAccount from "../Account/ManageAccount";
 
 const Header = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -19,6 +20,8 @@ const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.account.user);
   const cart = useSelector((state) => state.order.carts);
+
+  const [showManageAccount, setShowManageAccount] = useState(false);
 
   const handleLogout = async () => {
     const res = await callLogout();
@@ -31,19 +34,19 @@ const Header = () => {
 
   let items = [
     {
-      label: <label style={{ cursor: "pointer" }}>Quản lý tài khoản</label>,
-      key: "account",
-    },
-    {
       label: (
         <label
           style={{ cursor: "pointer" }}
-          onClick={() => navigate("orderHistory")}
+          onClick={() => setShowManageAccount(true)}
         >
-          Lịch sử mua hàng
+          Quản lý tài khoản
         </label>
       ),
       key: "account",
+    },
+    {
+      label: <Link to="orderHistory">Lịch sử mua hàng</Link>,
+      key: "orderHistory",
     },
     {
       label: (
@@ -171,6 +174,10 @@ const Header = () => {
         <p>Đăng xuất</p>
         <Divider />
       </Drawer>
+      <ManageAccount
+        showManageAccount={showManageAccount}
+        setShowManageAccount={setShowManageAccount}
+      />
     </>
   );
 };
