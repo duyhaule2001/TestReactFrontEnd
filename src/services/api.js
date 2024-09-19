@@ -137,3 +137,7 @@ export const changePassword = (email, oldpass, newpass) => {
     newpass,
   });
 };
+
+export const fetchDataDashBoard = () => {
+  return axios.get("/api/v1/database/dashboard");
+};
